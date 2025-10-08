@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lausanne Pay — Payer</title>  
+  <link rel="stylesheet" href="/resources/css/dashboard.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>💳 Vibe — Paiement</h1>
+    
+    <!-- Sélecteur de devise global -->
+    <div class="card">
+      <div class="currency-row">
+        <label>💱 Devise pour les montants:</label>
+        <select id="currencySelect">
+          <option value="CHF">CHF - Franc suisse</option>
+        </select>
+        <span class="muted">Les montants seront saisis dans cette devise</span>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h2>Payer — Scanner & Payer</h2>
+      <div class="row">
+        <label>Client</label>
+        <select id="payerSelect">
+          <option value="1">Alice (CHF)</option>
+          <option value="2">Bruno (EUR)</option>
+          <option value="3">Camille (GBP)</option>
+        </select>
+        <span>Solde: <span id="payerBalance" class="balance-display">CHF 150.00</span></span>
+      </div>
+      <div class="qrbox">
+        <div id="reader">
+          <div class="muted">Scanner QR activé - pointez vers un QR commerçant</div>
+        </div>
+      </div>
+      <div id="scanResult" class="mt"></div>
+      <div id="actionRow" class="row hidden">
+        <button id="confirmBtn" class="btn-primary">Confirmer le paiement</button>
+        <button id="cancelBtn">Annuler</button>
+        <span id="payMsg" class="muted"></span>
+      </div>
+    </div>
+    
+    <div class="card">        
+        <h3>Procédure Paiement</h3>      
+        <button>
+            <a href="/dashboard">FINAL | Voir soldes & transactions updatées</a>
+        </button>      
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/resources/js/app.js" defer></script>
+</body>
+</html>

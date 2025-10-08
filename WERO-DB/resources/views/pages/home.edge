@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vibe Payment Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    select, button { margin: 5px 0; padding: 8px; }
+    #qr-reader { width: 300px; margin: 10px 0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Vibe Payment Dashboard</h1>
+
+  <div>
+    <label for="clientSelect">Sélectionner un client :</label><br />
+    <select id="clientSelect"></select>
+  </div>
+
+  <div>
+    <label for="merchantSelect">Sélectionner un commerçant :</label><br />
+    <select id="merchantSelect"></select>
+  </div>
+
+  <div>
+    <h3>QR Code du commerçant :</h3>
+    <canvas id="merchantQr"></canvas>
+  </div>
+
+  <div>
+    <h3>Scanner QR Code :</h3>
+    <div id="qr-reader"></div>
+    <p>Code scanné : <span id="scannedCode">Aucun</span></p>
+  </div>
+
+  <div>
+    <label for="amountInput">Montant (en centimes) :</label><br />
+    <input type="number" id="amountInput" min="1" />
+  </div>
+
+  <button id="payBtn" disabled>Confirmer le paiement</button>
+
+  <h2>Soldes des wallets</h2>
+  <table id="walletsTable">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Solde (CHF)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Transactions récentes</h2>
+  <table id="transactionsTable">
+    <thead>
+      <tr>
+        <th>De</th>
+        <th>À</th>
+        <th>Montant (CHF)</th>
+        <th>Note</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.7/minified/html5-qrcode.min.js"></script>
+
+<script>
+  const clientSelect = document.getElementById('clientSelect')
+  const merchantSelect = document.getElementById('merchantSelect')
+  const merchantQr = document.getElementById('merchantQr')
+  const scannedCodeSpan = document.getElementById('scannedCode')
+  const amountInput = document.getElementById('amountInput')
+  const payBtn = document.getElementById('payBtn')
+  const walletsTableBody = document.querySelector('#walletsTable tbody')
+  const transactionsTableBody = document.querySelector('#transactionsTable tbody')
+
+  let scannedMerchantId = null
+
+  // Charger wallets pour remplir sélecteurs et tableau
+  async function loadWallets() {
+    const res = await fetch('/api/wallets')
+    const wallets = await res.json()
+
+    // Reset selects et tableau
+    clientSelect.innerHTML = '<option value="">--Choisir un client--</option>'
+    merchantSelect.innerHTML = '<option value="">--Choisir un commerçant--</option>'
+    walletsTableBody.innerHTML = ''
+
+    wallets.forEach(w => {
+      const option = document.createElement('option')
+      option.value = w.id
+      option.textContent = `${w.name} (${w.type})`
+      if (w.type === 'client') {
+        clientSelect.appendChild(option.cloneNode(true))
+      } else if (w.type === 'merchant') {
+        merchantSelect.appendChild(option.cloneNode(true))
+      }
+
+      // Ajouter ligne tableau soldes
+      const tr = document.createElement('tr')
+      tr.innerHTML = `
+        <td>${w.name}</td>
+        <td>${w.type}</td>
+        <td>${(w.balance_cents / 100).toFixed(2)}</td>
+      `
+      walletsTableBody.appendChild(tr)
+    })
+  }
+
+  // Charger transactions récentes
+  async function loadTransactions() {
+    const res = await fetch('/api/transactions')
+    const transactions = await res.json()
+
+    transactionsTableBody.innerHTML = ''
+
+    transactions.forEach(t => {
+      transactionsTableBody.innerHTML += `
+        <tr>
+          <td>${t.fromWallet?.name || t.fromWalletId}</td>
+          <td>${t.toWallet?.name || t.toWalletId}</td>
+          <td>${(t.amount_cents / 100).toFixed(2)}</td>
+          <td>${t.note || ''}</td>
+          <td>${new Date(t.createdAt).toLocaleString()}</td>
+        </tr>
+      `
+    })
+  }
+
+  // Générer QR code du commerçant sélectionné
+  function generateMerchantQr() {
+    const merchantId = merchantSelect.value
+    if (!merchantId) {
+      merchantQr.getContext('2d').clearRect(0, 0, merchantQr.width, merchantQr.height)
+      scannedMerchantId = null
+      payBtn.disabled = true
+      return
+    }
+    scannedMerchantId = merchantId
+    QRCode.toCanvas(merchantQr, merchantId, function (error) {
+      if (error) console.error(error)
+    })
+    updatePayBtnState()
+  }
+
+  // Initialiser scanner QR code
+  const html5QrCode = new Html5Qrcode("qr-reader")
+  function onScanSuccess(decodedText, decodedResult) {
+    scannedCodeSpan.textContent = decodedText
+    updatePayBtnState()
+  }
+  function onScanError(errorMessage) {
+    // console.log(`Scan error: ${errorMessage}`)
+  }
+
+  // Start scanner au chargement
+  Html5Qrcode.getCameras().then(cameras => {
+    if (cameras && cameras.length) {
+      const cameraId = cameras[0].id
+      html5QrCode.start(
+        cameraId, 
+        { fps: 10, qrbox: 250 }, 
+        onScanSuccess, 
+        onScanError
+      )
+    }
+  }).catch(err => {
+    console.error(err)
+    scannedCodeSpan.textContent = "Erreur accès caméra"
+  })
+
+  // Bouton paiement activé si tout est ok
+  function updatePayBtnState() {
+    payBtn.disabled = !(
+      clientSelect.value &&
+      scannedCodeSpan.textContent &&
+      scannedCodeSpan.textContent !== "Aucun" &&
+      amountInput.value > 0
+    )
+  }
+
+  clientSelect.addEventListener('change', updatePayBtnState)
+  amountInput.addEventListener('input', updatePayBtnState)
+  merchantSelect.addEventListener('change', generateMerchantQr)
+
+  // Bouton paiement click
+  payBtn.addEventListener('click', async () => {
+    const fromWalletId = clientSelect.value
+    const toWalletId = scannedCodeSpan.textContent
+    const amount_cents = Number(amountInput.value)
+
+    if (!fromWalletId || !toWalletId || amount_cents <= 0) {
+      alert('Vérifie tous les champs !')
+      return
+    }
+
+    try {
+      const res = await fetch('/api/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromWalletId, toWalletId, amount_cents }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Erreur paiement')
+
+      alert('Paiement réussi 🎉')
+      // Reload data
+      await loadWallets()
+      await loadTransactions()
+
+      amountInput.value = ''
+      scannedCodeSpan.textContent = 'Aucun'
+      payBtn.disabled = true
+    } catch (err) {
+      alert('Erreur: ' + err.message)
+    }
+  })
+
+  // Load initial data
+  loadWallets()
+  loadTransactions()
+</script>
+</body>
+</html>

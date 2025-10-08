@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lausanne Pay — Commerçant</title>  
+    <link rel="stylesheet" href="/resources/css/dashboard.css"/>
+    </head>
+    <body>
+    <div class="container">
+        <h1>💳 Vibe — Commerçant</h1>
+        
+        <!-- Sélecteur de devise global -->
+        <div class="card">
+        <div class="currency-row">
+            <label>💱 Devise pour les montants:</label>
+            <select id="currencySelect">
+            <option value="CHF">CHF - Franc suisse</option>
+            </select>
+            <span class="muted">Les montants seront saisis dans cette devise</span>
+        </div>
+        </div>
+    
+        <div class="card">
+        <h2>Commerçant — Générer un QR</h2>
+        <div class="row">
+            <label>Commerçant</label>
+            <select id="merchantSelect">
+            <option value="4">Café de la Gare</option>
+            <option value="5">Boutique Léman</option>
+            <option value="6">Musée Cantonal</option>
+            </select>
+        </div>
+        <div class="row">
+            <label>Montant</label>
+            <input id="amountInput" type="number" min="0" step="0.01" placeholder="12.50" />
+            <span id="amountCurrency" class="currency-badge">CHF</span>
+            <button id="makeQR" class="btn-primary">Créer QR</button>
+        </div>
+        <div class="currency-info">
+            <div class="muted">💡 Le QR sera généré dans la devise sélectionnée ci-dessus. La conversion se fera automatiquement lors du paiement.</div>
+        </div>
+        <div class="qrbox">
+            <div id="qrcode">
+            <div class="muted">Le QR code apparaîtra ici</div>
+            </div>
+        </div>
+        <div class="footer">Format: <code>LZPAY|merchantId|amount_cents|currency|nonce</code></div>
+        </div>
+
+        <div class="card">        
+            <h3>Procédure Paiement</h3>      
+            <button>
+                <a href="/pay">STEP 2 | Scanner un QR pour payer</a>
+            </button>      
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="{{ asset('resources/js/merchant.js') }}" defer></script>
+    </body>
+</html>
