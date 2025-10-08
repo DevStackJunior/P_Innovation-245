@@ -2,6 +2,17 @@ import Wallet from '#models/wallet'
 import { HttpContext } from '@adonisjs/core/http'
 
 export default class WalletsController {
+  public async index({ params, response }: HttpContext) {
+    try {
+      const wallet = await Wallet.findOrFail(params.id)
+      await wallet.load('user')
+      await wallet.load('currency')
+      return response.ok(wallet)
+    } catch {
+      return response.notFound('Wallet not found')
+    }
+  }
+
   public async create({ request, response }: HttpContext) {
     try {
       const payload = request.only(['name', 'userId', 'currencyId', 'balance_cents'])

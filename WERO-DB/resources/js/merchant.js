@@ -62,25 +62,41 @@
     ).join('');
   }
 
-  async function loadMerchants(elements) {
-    if (!elements.merchantSelect) return;
+  async function api(path, options = {}) {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
 
-    try {
-      const wallets = await mockApi('/api/wallets');
-      state.wallets = wallets;
-
-      const merchants = wallets.filter(w => w.kind === 'merchant');
-
-      elements.merchantSelect.innerHTML = merchants.map(m =>
-        `<option value="${m.id}">${m.name} (${m.currency})</option>`
-      ).join('');
-
-      console.log('Merchants loaded:', merchants.length);
-    } catch (error) {
-      console.error('Failed to load merchants:', error);
-      showError('Erreur lors du chargement des commerçants');
-    }
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error(message || 'Erreur serveur');
   }
+
+  return res.json();
+  }
+
+  async function loadMerchants(elements) {
+  if (!elements.merchantSelect) return;
+
+  try {
+    const wallets = await api('/api/wallets');
+    state.wallets = wallets;
+
+    // Changement ici : filtrer sur type, pas kind
+    const merchants = wallets.filter(w => w.type === 'merchant');
+
+    // Pour la devise, tu peux afficher simplement currencyId, ou si tu as un mapping CURRENCIES
+    elements.merchantSelect.innerHTML = merchants.map(m =>
+      `<option value="${m.id}">${m.name} (Devise ID: ${m.currencyId})</option>`
+    ).join('');
+
+    console.log('Merchants loaded:', merchants.length);
+  } catch (error) {
+    console.error('Failed to load merchants:', error);
+    showError('Erreur lors du chargement des commerçants');
+  }
+}
 
   function buildQR(elements) {
     const merchId = Number(elements.merchantSelect?.value);

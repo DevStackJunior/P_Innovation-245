@@ -26,12 +26,12 @@ const BASE_RATE = 1.0;
 
 // Mock data
 const mockWallets = [
-  { id: 1, name: 'Alice', kind: 'customer', balance_cents: 15000, currency: 'CHF' },
-  { id: 2, name: 'Bruno', kind: 'customer', balance_cents: 8000, currency: 'EUR' },
-  { id: 3, name: 'Camille', kind: 'customer', balance_cents: 2500, currency: 'GBP' },
-  { id: 4, name: 'Café de la Gare', kind: 'merchant', balance_cents: 0, currency: 'CHF' },
-  { id: 5, name: 'Boutique Léman', kind: 'merchant', balance_cents: 0, currency: 'EUR' },
-  { id: 6, name: 'Musée Cantonal', kind: 'merchant', balance_cents: 0, currency: 'NOK' },
+  { id: 1, name: 'Alice', type: 'customer', balance_cents: 15000, currencyId: 'CHF' },
+  { id: 2, name: 'Bruno', type: 'customer', balance_cents: 8000, currencyId: 'EUR' },
+  { id: 3, name: 'Camille', type: 'customer', balance_cents: 2500, currencyId: 'GBP' },
+  { id: 4, name: 'Café de la Gare', type: 'merchant', balance_cents: 0, currencyId: 'CHF' },
+  { id: 5, name: 'Boutique Léman', type: 'merchant', balance_cents: 0, currencyId: 'EUR' },
+  { id: 6, name: 'Musée Cantonal', type: 'merchant', balance_cents: 0, currencyId: 'NOK' },
 ];
 
 const mockTransactions = [];
@@ -94,46 +94,48 @@ function makeNonce() {
 // API MOCK - SIMULATION DES APPELS SERVEUR
 // ===============================================
 
-async function mockApi(path, opts = {}) {
+async function api(path, options = {}) {
+  // Pour simuler la latence serveur
   await new Promise(resolve => setTimeout(resolve, 100));
- 
+
   if (path === '/api/wallets') {
     return state.wallets;
   }
- 
+
   if (path === '/api/transactions') {
+    // Renvoie les 10 dernières transactions, ordre inverse
     return state.transactions.slice(-10).reverse();
   }
-  
+
   if (path === '/api/currencies') {
     return {
       currencies: CURRENCIES,
       baseCurrency: BASE_CURRENCY
     };
   }
- 
-  if (path === '/api/pay' && opts.method === 'POST') {
-    const data = JSON.parse(opts.body);
+
+  if (path === '/api/pay' && options.method === 'POST') {
+    const data = JSON.parse(options.body);
     const { from_wallet_id, to_wallet_id, amount_cents, note, qr_nonce, original_currency } = data;
-   
+
     const fromWallet = state.wallets.find(w => w.id === from_wallet_id);
     const toWallet = state.wallets.find(w => w.id === to_wallet_id);
-   
+
     if (!fromWallet || !toWallet) {
       throw new Error('Wallet not found');
     }
 
-    const amountInPayerCurrency = convertCurrency(amount_cents, original_currency, fromWallet.currency);
-   
+    const amountInPayerCurrency = convertCurrency(amount_cents, original_currency, fromWallet.currencyId);
+
     if (fromWallet.balance_cents < amountInPayerCurrency) {
       throw new Error('Insufficient funds');
     }
 
-    const amountInReceiverCurrency = convertCurrency(amount_cents, original_currency, toWallet.currency);
-   
+    const amountInReceiverCurrency = convertCurrency(amount_cents, original_currency, toWallet.currencyId);
+
     fromWallet.balance_cents -= amountInPayerCurrency;
     toWallet.balance_cents += amountInReceiverCurrency;
-   
+
     const tx = {
       id: state.transactions.length + 1,
       ts: new Date().toISOString(),
@@ -141,36 +143,38 @@ async function mockApi(path, opts = {}) {
       to_wallet_id,
       amount_cents,
       original_currency,
-      from_currency: fromWallet.currency,
-      to_currency: toWallet.currency,
+      from_currency: fromWallet.currencyId,
+      to_currency: toWallet.currencyId,
       from_amount_cents: amountInPayerCurrency,
       to_amount_cents: amountInReceiverCurrency,
       note,
-      qr_nonce,
-      from_name: fromWallet.name,
-      to_name: toWallet.name
+      qr_nonce
+      // Optionnel: tu peux rajouter from_name et to_name si tu veux des infos complémentaires dans le mock
+      // from_name: fromWallet.name,
+      // to_name: toWallet.name
     };
-   
+
     state.transactions.push(tx);
-   
+
     return { ok: true, tx };
   }
- 
-  if (path === '/api/decode-qr' && opts.method === 'POST') {
-    const data = JSON.parse(opts.body);
+
+  if (path === '/api/decode-qr' && options.method === 'POST') {
+    const data = JSON.parse(options.body);
     const payload = data.payload;
     const parts = payload.split('|');
-   
+
     if (parts[0] !== 'LZPAY' || parts.length < 5) {
       throw new Error('Invalid QR code format');
     }
-   
+
     const [, merchantId, amountCentsStr, currency, nonce] = parts;
     const to_wallet_id = Number(merchantId);
     const amount_cents = Number(amountCentsStr);
-   
-    const merchant = state.wallets.find(w => w.id === to_wallet_id && w.kind === 'merchant');
-   
+
+    // Recherche par type 'merchant' (et pas 'kind')
+    const merchant = state.wallets.find(w => w.id === to_wallet_id && w.type === 'merchant');
+
     if (!merchant) {
       throw new Error('Unknown merchant');
     }
@@ -178,17 +182,17 @@ async function mockApi(path, opts = {}) {
     if (!CURRENCIES[currency] && currency !== BASE_CURRENCY) {
       throw new Error('Unsupported currency');
     }
-   
+
     return {
       ok: true,
       to_wallet_id,
       amount_cents,
       currency,
       merchant_name: merchant.name,
-      merchant_currency: merchant.currency,
+      merchant_currency: merchant.currencyId,
       nonce
     };
   }
- 
+
   throw new Error('Unknown API endpoint');
 }
