@@ -20,29 +20,28 @@ Prove that 2 financial formated files coming from european format data norm, and
     - merchant.edge
     - pay.edge
 
-🧪 Objectifs du Proof of Concept (PoC)
+# Proof of Concept - Fusion de 2 Applications Financières avec AdonisJS
 
-Ce PoC a pour but de démontrer la faisabilité technique de la fusion de deux applications financières en une seule, à l’aide du framework AdonisJS, en se basant uniquement sur des fichiers JSON bruts comme source de données.
+## Objectifs du PoC
 
-✅ Objectifs principaux
+Ce PoC a pour but de démontrer la faisabilité technique de la **fusion de deux applications financières** en une seule, en utilisant le framework **AdonisJS**, avec uniquement des fichiers JSON bruts comme source de données.
 
-🔄 Fusion des données provenant de deux systèmes/applications financières distincts (App A et App B).
+### Objectifs principaux
 
-📁 Chargement des données JSON locales (sans base de données ni API externe).
+- **Fusion des données** provenant de deux systèmes/applications financières distincts (App A et App B).
+- **Chargement des données JSON locales** (sans base de données ni API externe).
+- **Architecture modulaire** permettant de séparer la logique de chaque application tout en les unifiant dans un seul projet AdonisJS.
+- **Gestion commune de la logique métier**, des services et des routes exposées.
+- **Agrégation, transformation et exposition** des données dans un format unifié via une API REST.
+- **Structure claire, scalable et extensible**, facilitant l’ajout d’une troisième application ou la migration vers une base de données plus tard.
 
-🧱 Architecture modulaire permettant de séparer la logique de chaque application tout en les unifiant dans un seul projet AdonisJS.
+### Ce que le PoC démontre
 
-🔐 Gestion commune de la logique métier, des services et des routes exposées.
-
-📊 Agrégation, transformation et exposition des données dans un format unifié via une API REST.
-
-⚙️ Structure claire, scalable et extensible, facilitant l’ajout d’une troisième application ou la transition vers une base de données plus tard.
-
-💡 Ce que le PoC démontre
-Fonctionnalité	Détail
-📂 Lecture multi-source	Chargement de fichiers JSON pour App A et App B
-🔄 Fusion logique	Agrégation des données utilisateurs et transactions
-🧩 Modularité	Services et contrôleurs organisés par application
-🛣️ API REST unifiée	Routes regroupées pour l'accès aux données fusionnées
-📈 Simulations réalistes	Exemples de transactions, utilisateurs, agrégation, tri
-🔒 Séparation des responsabilités	Gestion distincte des données App A et App B
+| Fonctionnalité          | Description                                                   |
+|------------------------|---------------------------------------------------------------|
+| 📂 Lecture multi-source | Chargement de fichiers JSON pour App A et App B               |
+| 🔄 Fusion logique       | Agrégation des données utilisateurs et transactions           |
+| 🧩 Modularité           | Services et contrôleurs organisés par application             |
+| 🛣️ API REST unifiée    | Routes regroupées pour l'accès aux données fusionnées         |
+| 📈 Simulations réalistes| Exemples de transactions, utilisateurs, agrégation, tri       |
+| 🔒 Séparation des responsabilités | Gestion distincte des données App A et App B         |
