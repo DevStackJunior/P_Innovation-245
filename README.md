@@ -1,4 +1,5 @@
 ## Main Objectives : 
+Prove that 2 financial formated files coming from european format data norm, and swiss format data norm in financial world can be merged and interpreted within one database to display datas, and read QR Code.  
 - Configure database (docker container | private desktop)
 - Data Seeds -> DB mysql
 - Create 2 raw API routes (1 JSON file/route) 
