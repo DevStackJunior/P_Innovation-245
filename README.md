@@ -9,7 +9,7 @@ Prove that 2 financial formated files coming from european format data norm, and
       - 1 JSON File | Format Data coming from TWINT (SWISS bank data norm)
       - 1 JSON File | Format Data coming from WERO (EU bank data norm)
 
-### Secoundary Objectives : 
+### Secoundary Objectives | Technical : 
 - Call javascript files (/resources/js/) : 
     - common.js
     - dashboard.js
