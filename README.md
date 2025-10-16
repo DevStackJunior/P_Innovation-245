@@ -17,7 +17,7 @@ Ce PoC a pour but de démontrer la faisabilité technique de la **"fusion" de de
 
 | Fonctionnalité          | Description                                                   |
 |------------------------|---------------------------------------------------------------|
-| 📂 Lecture multi-source | Chargement de fichiers JSON pour App A et App B               |
+| 📂 Lecture multi-source | Chargement de fichiers JSON pour App A (simulée Route Brute) et App B (simulée Route Brute)              |
 | 🔄 Fusion logique       | Agrégation des données utilisateurs et transactions           |
 | 🧩 Modularité           | Services et contrôleurs organisés par application             |
 | 🛣️ API REST unifiée    | Routes regroupées pour l'accès aux données fusionnées         |
