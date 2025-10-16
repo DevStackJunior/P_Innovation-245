@@ -79,24 +79,50 @@ Avant insertion en base, un service de normalisation applique :
 
 ---
 
-### 5. Architecture technique
+### 📂 Arborescence globale
 
 ```bash
 /app
- ├── Modules/
- │   ├── SwissProvider/       # Logique d’import TWINT / normes suisses
- │   ├── EuProvider/          # Logique d’import WERO / PSD2
- │   └── Shared/              # Schémas et services communs
- ├── Services/
- │   ├── DataLoaderService.ts     # Lecture des JSON depuis /data/
- │   ├── NormalizationService.ts  # Validation et unification des données
- │   ├── FusionService.ts         # Insertion et fusion en base
- ├── Database/
- │   ├── migrations/              # Schéma SQL des transactions
- │   ├── seeds/                   # Scripts d’import JSON → DB
- ├── Resources/
- │   ├── views/                   # Visualisation des données fusionnées
- │   ├── exports/                 # Génération d’exports (JSON, CSV)
- ├── data/
- │   ├── a.json    # Transactions suisses 🇨🇭
- │   └── b.json    # Transactions européennes 🇪🇺
+ ├── controllers/              # Contrôleurs métier : lecture et fusion des données JSON
+ ├── data/                     # Données JSON brutes simulant deux environnements bancaires
+ │   ├── a.json                # 🇨🇭 Données TWINT / Swiss Payment Standard
+ │   └── b.json                # 🇪🇺 Données WERO / PSD2 Berlin Group
+ ├── exceptions/               # Gestion des erreurs et exceptions globales
+ ├── middleware/               # Middlewares AdonisJS (container bindings, etc.)
+ │   └── container_bindings_middleware.ts
+ ├── models/                   # Modèles Lucid ORM (liés à la base MySQL)
+ │   ├── currency.ts           # Table des devises (ISO 4217)
+ │   ├── merchant.ts           # Table des marchands
+ │   ├── test.ts               # Modèle de test / sandbox
+ │   ├── transaction.ts        # Table principale des transactions
+ │   ├── user.ts               # Table des utilisateurs
+ │   └── wallet.ts             # Table des portefeuilles électroniques
+/bin                           # Scripts CLI (ex: seed, maintenance)
+/config                        # Configuration AdonisJS (app, database, etc.)
+/database                      # Migrations et seeds pour la base MySQL
+/resources                     # Couche présentation : CSS, JS et templates Edge
+ │
+ ├── css/                      # Feuilles de styles du front-end
+ │   ├── app.css
+ │   ├── dashboard.css
+ │   └── home.css
+ │
+ ├── js/                       # Scripts front-end spécifiques aux vues
+ │   ├── app.js
+ │   ├── common.js
+ │   ├── dashboard.js
+ │   ├── home.js
+ │   ├── merchant.js
+ │   └── pay.js
+ │
+ ├── views/                    # Templates Edge pour affichage des pages
+ │   ├── components/layout/    # Composants réutilisables (layout global)
+ │   │   └── main.edge
+ │   ├── pages/                # Pages de l’application
+ │   │   ├── errors/           # Pages d’erreurs (404, 500, etc.)
+ │   │   ├── dashboard.edge    # Vue du tableau de bord (transactions agrégées)
+ │   │   ├── merchant.edge     # Vue marchands
+ │   │   ├── pay.edge          # Vue paiement
+ │   │   └── home.edge         # Vue d’accueil / overview
+ │
+/start                         # Initialisation (kernel, routes, providers, etc.)
