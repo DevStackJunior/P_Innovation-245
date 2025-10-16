@@ -19,7 +19,7 @@ Aucune API externe n’est utilisée — toutes les données sont **chargées lo
 - **Architecture modulaire** pour isoler la logique de chaque application.  
 - **Gestion commune de la logique métier**, services et schémas.  
 - **Fusion et transformation des données** dans un format unique.  
-- **Préparation d’une future migration** vers une base SQL complète.  
+- **Migration Opérationnelle** vers une base SQL complète.  
 
 ---
 
