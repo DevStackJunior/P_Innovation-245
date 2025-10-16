@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {{ title || 'Lausanne Pay' }}
+    </title>
+
+    @if ($slots.style)
+      {{{ await $slots.style() }}}
+    @else
+      <link rel="stylesheet" href="/css/app.css" />
+    @end
+  </head>
+  <body>
+    <main>
+      {{{ await $slots.main() }}}
+    </main>
+
+    @if ($slots.script)
+      {{{ await $slots.script() }}}
+    @endif
+    
+  </body>
+</html>

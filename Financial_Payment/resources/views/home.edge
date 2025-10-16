@@ -1,0 +1,108 @@
+@layout.main()
+
+  @slot('style')
+    <link rel="stylesheet" href="/resources/css/home.css" />
+  @endslot
+  
+  @slot('main')
+    <h1>
+      Vibe Payment Dashboard
+    </h1>
+    {{--
+    <div>
+      <label for="clientSelect">Sélectionner un client :</label>      <br />
+      <select id="clientSelect"></select>
+    </div>
+    
+    <div>
+      <label for="merchantSelect">Sélectionner un commerçant :</label>      <br />
+      <select id="merchantSelect"></select>
+    </div>
+    
+    <div>
+      <label for="currenciesSelect">Sélectionner un commerçant :</label>      <br />
+      <select id="currenciesSelect"></select>
+    </div> --}}
+
+    {{-- <div>
+      <h3>
+        QR Code du commerçant :
+      </h3>
+      <canvas id="merchantQr">
+      </canvas>
+    </div> --}}
+
+    {{-- <div>
+      <h3>
+        Scanner QR Code :
+      </h3>
+      <div id="qr-reader">
+      </div>
+      <p>
+        Code scanné : <span id="scannedCode">Aucun</span>
+      </p>
+    </div> --}}
+
+    {{-- <div>
+      <label for="amountInput">Montant (en centimes) :</label>      <br />
+      <input type="number" id="amountInput" min="1" />
+    </div>
+    
+    <button id="payBtn" disabled>Confirmer le paiement</button> --}}
+
+    <h2>
+      Soldes des wallets
+    </h2>
+    <table id="walletsTable">
+      <thead>
+        <tr>
+          <th>
+            Nom
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Solde (CHF)
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <h2>
+      Transactions récentes
+    </h2>
+    <table id="transactionsTable">
+      <thead>
+        <tr>
+          <th>
+            De
+          </th>
+          <th>
+            À
+          </th>
+          <th>
+            Montant (CHF)
+          </th>
+          <th>
+            Note
+          </th>
+          <th>
+            Date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  @endslot
+  
+  @slot('script')
+    <script src="/resources/js/home.js" >
+
+    </script>
+  @endslot
+  
+@end

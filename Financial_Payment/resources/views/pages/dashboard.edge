@@ -1,0 +1,65 @@
+@layout.main({ title: "Lausanne Pay — Dashboard"})
+
+  @slot('style')
+    <link rel="stylesheet" href="/resources/css/dashboard.css" />
+  @endslot
+  
+  @slot('main')
+    <div class="container">
+      <h1>
+        💳 Vibe — Dashboard
+      </h1>
+
+      <div class="card">
+        <h2>
+          Soldes & Transactions
+        </h2>
+        <button id="refreshBtn">↻ Actualiser</button>
+        <div class="grid2">
+          <div>
+            <h3>
+              Transactions récentes
+            </h3>
+            <table id="txTable">
+              <thead>
+                <tr>
+                  <th>
+                    #
+                  </th>
+                  <th>
+                    Date
+                  </th>
+                  <th>
+                    Payeur
+                  </th>
+                  <th>
+                    Commerçant
+                  </th>
+                  <th>
+                    Montant
+                  </th>
+                  <th>
+                    Devise
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" class="muted">
+                    Aucune transaction
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    @endslot
+    
+    @slot('script')
+      <script src="/resources/js/dashboard.js">
+
+      </script>
+    @endslot
+    
+  @end
