@@ -56,7 +56,7 @@ mais leurs **contenus diffèrent** (valeurs, montants, devises, origine, etc.).
    - Chaque entrée est validée, enrichie et préparée pour insertion.
 
 2. **Insertion et fusion en base**
-   - Les enregistrements sont insérés dans MySQL/MariaDB.  
+   - Les enregistrements sont insérés dans MySQL.  
    - Une table unique regroupe toutes les transactions avec un champ d’origine :  
      - `"origin": "SWISS"` pour `/data/a.json`  
      - `"origin": "EU"` pour `/data/b.json`.
@@ -74,8 +74,7 @@ Avant insertion en base, un service de normalisation applique :
 - ✅ **Validation de structure** (`user_id`, `merchant_id`, `amount`, `currency_id`, etc.)  
 - 🔄 **Conversion de statuts** → normes ISO 20022 :  
   `completed` → `BOOKED`, `pending` → `PENDING`, `failed` → `REJECTED`  
-- 💱 **Uniformisation des devises** selon **ISO 4217** (CHF, EUR, etc.)  
-- 🌍 **Ajout d’un champ d’origine** : `"SWISS"` ou `"EU"`
+- 💱 **Uniformisation des devises** selon **ISO 4217** (CHF, EUR, etc.) 
 
 ---
 
