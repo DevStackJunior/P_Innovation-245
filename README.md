@@ -1,4 +1,4 @@
-# 💳 Proof of Concept – Fusion d'activités transactionnelles de 2 applications financières différentes avec AdonisJS
+# 💳 Proof of Concept – Fusion de 2 applications financières avec AdonisJS
 
 ## 🧠 Contexte
 
