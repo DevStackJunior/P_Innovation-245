@@ -1,8 +1,8 @@
-# 💳 Proof of Concept – Fusion de 2 Applications Financières avec AdonisJS
+# 💳 Proof of Concept – Fusion d'activités transactionnelles de 2 applications financières différentes avec AdonisJS
 
 ## 🧠 Contexte
 
-Ce Proof of Concept (PoC) démontre la faisabilité technique de la **fusion de deux applications financières** en une seule plateforme unifiée, à l’aide du framework **AdonisJS**.  
+Ce Proof of Concept (PoC) démontre la faisabilité technique de la ***fusion* de formats transactionnels différents en provenance de deux applications financières** en une seule plateforme unifiée, à l’aide du framework **AdonisJS**.  
 Les sources de données sont **deux fichiers JSON locaux** représentant deux environnements bancaires différents :  
 🇨🇭 **TWINT (normes suisses)** et 🇪🇺 **WERO (normes européennes)**.
 
