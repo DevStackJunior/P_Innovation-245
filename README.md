@@ -29,7 +29,7 @@ Aucune API externe n’est utilisée — toutes les données sont **chargées lo
 
 - Utilisation d’un **conteneur MySQL (Docker)** pour centraliser les données fusionnées.  
 - **Lecture et importation** des fichiers `/data/a.json` et `/data/b.json` dans la base à l’initialisation du projet.  
-- **Aucune route API exposée** : les données sont exploitées depuis le dossier `/data/`.  
+- **Aucune route API brute exposée** : les données sont exploitées depuis le dossier `/data/`.  
 - Possibilité d’utiliser des **scripts de seeding AdonisJS** pour automatiser le chargement.
 
 ---
@@ -63,7 +63,7 @@ mais leurs **contenus diffèrent** (valeurs, montants, devises, origine, etc.).
 
 3. **Lecture depuis `/resources/`**
    - Les vues, scripts ou exports dans `/resources/` accèdent directement à la base.  
-   - Aucune route `/api/` n’est utilisée : tout est interne à AdonisJS.
+   - Aucun dossier `/api/` n’est utilisé : tout est interne et géré par AdonisJS.
 
 ---
 
